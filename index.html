@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathHaven - Tools, Puzzles & Biology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Open+Sans:wght@400;600&family=Comic+Sans+MS&family=Brush+Script+MT&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; line-height: 1.7; transition: background 0.3s, color 0.3s; }
+        body.blue { background: #e6f0fa; color: #333; --primary: #2d6a4f; --accent: #40916c; --hover: #95d5b2; }
+        body.red { background: #fce6e6; color: #333; --primary: #9b1d20; --accent: #d32f2f; --hover: #ff6659; }
+        body.green { background: #e6f4e6; color: #333; --primary: #2e7d32; --accent: #4caf50; --hover: #81c784; }
+        body.purple { background: #f2e6fa; color: #333; --primary: #6a1b9a; --accent: #9c27b0; --hover: #ce93d8; }
+        body.orange { background: #fff3e6; color: #333; --primary: #e65100; --accent: #ff9800; --hover: #ffb74d; }
+        body.grey { background: #eceff1; color: #333; --primary: #455a64; --accent: #607d8b; --hover: #90a4ae; }
+        body.neon-pink { background: #ffebff; color: #333; --primary: #c2185b; --accent: #f06292; --hover: #f8bbd0; }
+        body.galaxy-purple { background: #ede7f6; color: #333; --primary: #4a148c; --accent: #7b1fa2; --hover: #ab47bc; }
+        body.cyan { background: #e0f7fa; color: #333; --primary: #006064; --accent: #00acc1; --hover: #4dd0e1; }
+        body.lime { background: #f9fbe7; color: #333; --primary: #827717; --accent: #c0ca33; --hover: #dce775; }
+        body.teal { background: #e0f2f1; color: #333; --primary: #00695c; --accent: #26a69a; --hover: #4db6ac; }
+        body.indigo { background: #e8eaf6; color: #333; --primary: #283593; --accent: #3f51b5; --hover: #7986cb; }
+        nav { background: var(--primary); padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        nav .nav-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        nav h1 { font-family: 'Lora', serif; font-size: 1.8em; color: #fff; }
+        nav ul { list-style: none; display: flex; gap: 30px; }
+        nav a { color: #fff; text-decoration: none; font-weight: 600; }
+        nav a:hover { color: var(--hover); }
+        #themeSelect { background: var(--hover); color: var(--primary); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        header { background: linear-gradient(135deg, var(--accent), var(--hover)); padding: 100px 20px 60px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+        header h1 { font-family: 'Lora', serif; font-size: 3.5em; margin-bottom: 10px; }
+        header p { font-size: 1.3em; max-width: 800px; margin: 0 auto; }
+        header::before {
+            content: "Solve Me! Think Deep! Crack It!";
+            position: absolute;
+            top: 10%; left: -10%;
+            font-size: 4em;
+            color: rgba(255, 255, 255, 0.2);
+            transform: rotate(-15deg);
+            font-family: 'Comic Sans MS', cursive;
+            white-space: nowrap;
+        }
+        header::after {
+            content: "HOTS Unleashed!";
+            position: absolute;
+            bottom: 10%; right: -5%;
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.15);
+            transform: rotate(10deg);
+            font-family: 'Brush Script MT', cursive;
+        }
+        .container { max-width: 1300px; margin: 60px auto; padding: 0 20px; display: none; }
+        .container.active { display: block; }
+        .home-content { text-align: center; }
+        .home-stats { margin: 20px 0; font-size: 1.2em; }
+        .emoji-banner { font-size: 2em; margin: 20px 0; }
+        .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }
+        .featured-card { background: rgba(255, 255, 255, 0.9); border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+        body.dark .featured-card { background: rgba(46, 63, 74, 0.9); }
+        .quick-links { margin: 20px 0; }
+        .quick-links button { margin: 0 10px; background: var(--accent); }
+        .quick-links button:hover { background: var(--hover); }
+        .tool-grid, .puzzle-grid, .biology-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 40px; }
+        .tool-card, .puzzle-card, .biology-card { border-radius: 12px; padding: 30px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05); transition: transform 0.3s, box-shadow 0.3s; }
+        body.light .tool-card, body.light .puzzle-card, body.light .biology-card { background: #fff; }
+        body.dark .tool-card, body.dark .puzzle-card, body.dark .biology-card { background: #2e3f4a; }
+        .tool-card:hover, .puzzle-card:hover, .biology-card:hover { transform: translateY(-10px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); }
+        h2 { font-family: 'Lora', serif; font-size: 2em; color: var(--primary); margin-bottom: 15px; }
+        p { font-size: 1.1em; margin-bottom: 20px; }
+        body.light p { color: #555; }
+        body.dark p { color: #b0c4de; }
+        .tool-input, .puzzle-input { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px 0; }
+        input[type="number"], select { padding: 12px; font-size: 1em; border: 1px solid #ccc; border-radius: 6px; width: 130px; }
+        body.dark input, body.dark select { background: #3b4e5a; color: #fff; border-color: #5a6e7a; }
+        button { padding: 12px 25px; font-size: 1em; background: var(--accent); color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: var(--hover); }
+        .result { margin-top: 20px; font-weight: 600; color: var(--accent); font-size: 1.2em; }
+        .correct { animation: pop 0.5s ease; }
+        .hint { font-size: 0.9em; color: #777; margin-top: 10px; cursor: pointer; }
+        body.dark .hint { color: #a0b3c1; }
+        .hint:hover { color: var(--accent); }
+        #aiTool { margin: 20px 0; text-align: center; }
+        #aiTool button { background: #1e90ff; }
+        #aiTool button:hover { background: #1c6ccf; }
+        #aiResult { font-style: italic; color: #1e90ff; }
+        body.dark #aiResult { color: #87cefa; }
+        #progressBar { width: 100%; height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        #progressFill { height: 100%; background: var(--accent); transition: width 0.5s; text-align: center; color: #fff; font-weight: bold; }
+        body.dark #progressBar { background: #3b4e5a; }
+        canvas { border: 1px solid #ccc; margin-top: 10px; }
+        body.dark canvas { border-color: #5a6e7a; }
+        footer { background: var(--primary); padding: 30px; color: #fff; text-align: center; margin-top: 60px; }
+        footer p { color: #fff; font-size: 1.1em; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @media (max-width: 768px) {
+            .tool-grid, .puzzle-grid, .biology-grid, .featured-grid { grid-template-columns: 1fr; }
+            nav ul { gap: 15px; }
+            header h1 { font-size: 2.5em; }
+            input[type="number"], select { width: 100%; }
+        }
+    </style>
+</head>
+<body class="blue">
+    <nav>
+        <div class="nav-container">
+            <h1>MathHaven</h1>
+            <ul>
+                <li><a href="#home" onclick="showSection('home')">Home</a></li>
+                <li><a href="#tools" onclick="showSection('tools')">Tools</a></li>
+                <li><a href="#puzzles" onclick="showSection('puzzles')">Puzzles</a></li>
+                <li><a href="#biology" onclick="showSection('biology')">Biology</a></li>
+                <li><a href="#about" onclick="showSection('about')">About</a></li>
+                <li>
+                    <select id="themeSelect">
+                        <option value="blue">Blue</option>
+                        <option value="red">Red</option>
+                        <option value="green">Green</option>
+                        <option value="purple">Purple</option>
+                        <option value="orange">Orange</option>
+                        <option value="grey">Grey</option>
+                        <option value="neon-pink">Neon Pink</option>
+                        <option value="galaxy-purple">Galaxy Purple</option>
+                        <option value="cyan">Cyan</option>
+                        <option value="lime">Lime</option>
+                        <option value="teal">Teal</option>
+                        <option value="indigo">Indigo</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="home" class="container active">
+        <div class="home-content">
+            <h1>Welcome to MathHaven</h1>
+            <p>Your CBSE Class 10 & JEE prep hub—tools, puzzles, and biology, all in one! 🚀</p>
+            <div class="home-stats">500+ puzzles solved | 300+ equations cracked | 10/10 vibes 🌟</div>
+            <div class="emoji-banner">📚✖️➕🔬🧬</div>
+            <div class="featured-grid">
+                <div class="featured-card">
+                    <h2>Featured Tool: Quadratic Solver</h2>
+                    <p>Solve ax² + bx + c = 0 like a pro! Try below 👇</p>
+                    <div class="tool-input">
+                        <input type="number" id="homeQuadA" placeholder="a">
+                        <input type="number" id="homeQuadB" placeholder="b">
+                        <input type="number" id="homeQuadC" placeholder="c">
+                        <button onclick="solveHomeQuadratic()">Solve</button>
+                    </div>
+                    <div class="result" id="homeQuadResult">Result: </div>
+                </div>
+                <div class="featured-card">
+                    <h2>Featured Puzzle: Next in Line</h2>
+                    <p>What’s next: 2, 4, 6, 8, ___?</p>
+                    <div class="puzzle-input">
+                        <input type="number" id="homePuzzleAnswer" placeholder="Answer">
+                        <button onclick="checkHomePuzzle()">Check</button>
+                    </div>
+                    <div class="result" id="homePuzzleResult">Result: </div>
+                </div>
+            </div>
+            <div class="quick-links">
+                <button onclick="showSection('tools')">Explore Tools 🛠️</button>
+                <button onclick="showSection('puzzles')">Solve Puzzles 🧩</button>
+                <button onclick="showSection('biology')">Dive into Biology 🧬</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" id="tools">
+        <h2>Mathematical Tools</h2>
+        <p>Power up your CBSE & JEE skills!</p>
+        <div class="tool-grid">
+            <div class="tool-card">
+                <h2>Basic Calculator</h2>
+                <p>Add, subtract, multiply, divide.</p>
+                <div class="tool-input">
+                    <input type="number" id="num1" placeholder="First number">
+                    <select id="operation">
+                        <option value="add">+</option>
+                        <option value="subtract">-</option>
+                        <option value="multiply">×</option>
+                        <option value="divide">÷</option>
+                    </select>
+                    <input type="number" id="num2" placeholder="Second number">
+                    <button onclick="calculate()">Calculate</button>
+                </div>
+                <div class="result" id="calcResult">Result: </div>
+            </div>
+            <div class="tool-card">
+                <h2>Fraction Simplifier</h2>
+                <p>Reduce fractions.</p>
+                <div class="tool-input">
+                    <input type="number" id="numerator" placeholder="Numerator">
+                    <span>/</span>
+                    <input type="number" id="denominator" placeholder="Denominator">
+                    <button onclick="simplifyFraction()">Simplify</button>
+                </div>
+                <div class="result" id="fracResult">Result: </div>
+            </div>
+            <div class="tool-card">
+                <h2>Quadratic Solver</h2>
+                <p>Solve ax² + bx + c = 0.</p>
+                <div class="tool-input">
+                    <input type="number" id="quadA" placeholder="a">
+                    <input type="number" id="quadB" placeholder="b">
+                    <input type="number" id="quadC" placeholder="c">
+                    <button onclick="solveQuadratic()">Solve</button>
+                </div>
+                <div class="result" id="quadResult">Result: </div>
+            </div>
+            <div class="tool-card">
+                <h2>Distance Formula</h2>
+                <p>Distance between two points.</p>
+                <div class="tool-input">
+                    <input type="number" id="x1" placeholder="x₁">
+                    <input type="number" id="y1" placeholder="y₁">
+                    <input type="number" id="x2" placeholder="x₂">
+                    <input type="number" id="y2" placeholder="y₂">
+                    <button onclick="calcDistance()">Calculate</button>
+                </div>
+                <div class="result" id="distResult">Result: </div>
+            </div>
+            <div class="tool-card">
+                <h2>Graphing Tool</h2>
+                <p>Plot a line: y = mx + b</p>
+                <div class="tool-input">
+                    <input type="number" id="slope" placeholder="Slope (m)">
+                    <input type="number" id="intercept" placeholder="Intercept (b)">
+                    <button onclick="drawGraph()">Graph 📈</button>
+                </div>
+                <canvas id="graphCanvas" width="300" height="200"></canvas>
+                <div class="result" id="graphResult">Result: </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="puzzles">
+        <h2>Math Puzzles</h2>
+        <p>Test your wits with these challenges!</p>
+        <div id="progressBar">
+            <div id="progressFill" style="width: 0%;">0% 🌟</div>
+        </div>
+        <div id="aiTool">
+            <h3>AI Puzzle Buddy</h3>
+            <p>Ask our "AI" for help!</p>
+            <div class="puzzle-input">
+                <input type="number" id="aiPuzzleNum" placeholder="Puzzle # (1-5)">
+                <input type="number" id="aiAnswer" placeholder="Your Answer">
+                <button onclick="askAI()">Ask AI 🤖</button>
+            </div>
+            <div class="result" id="aiResult"></div>
+        </div>
+        <div class="puzzle-grid">
+            <div class="puzzle-card">
+                <h2>Puzzle 1: Next in Line</h2>
+                <p>What’s the next number: 2, 4, 6, 8, ___?</p>
+                <div class="puzzle-input">
+                    <input type="number" id="puzzle1Answer" placeholder="Answer">
+                    <button onclick="checkPuzzle1()">Check</button>
+                </div>
+                <div class="result" id="puzzle1Result">Result: </div>
+                <div class="hint" onclick="alert('Hint: Look for a pattern in the differences.')">Show Hint ❓</div>
+            </div>
+            <div class="puzzle-card">
+                <h2>Puzzle 2: Fruit Share</h2>
+                <p>12 apples, keep 3, share rest among 3 friends. How many each?</p>
+                <div class="puzzle-input">
+                    <input type="number" id="puzzle2Answer" placeholder="Answer">
+                    <button onclick="checkPuzzle2()">Check</button>
+                </div>
+                <div class="result" id="puzzle2Result">Result: </div>
+                <div class="hint" onclick="alert('Hint: Subtract what you keep, then divide.')">Show Hint ❓</div>
+            </div>
+            <div class="puzzle-card">
+                <h2>Puzzle 3: Magic Square</h2>
+                <p>In a 3x3 grid summing to 15, if one row is 4, 9, 2, what’s 8, 3, ___?</p>
+                <div class="puzzle-input">
+                    <input type="number" id="puzzle3Answer" placeholder="Answer">
+                    <button onclick="checkPuzzle3()">Check</button>
+                </div>
+                <div class="result" id="puzzle3Result">Result: </div>
+                <div class="hint" onclick="alert('Hint: Each row sums to 15.')">Show Hint ❓</div>
+            </div>
+            <div class="puzzle-card">
+                <h2>Puzzle 4: Age Mystery</h2>
+                <p>I’m 12, sister’s 8. I’m twice her age when I was 8. How old when she’s 12?</p>
+                <div class="puzzle-input">
+                    <input type="number" id="puzzle4Answer" placeholder="Answer">
+                    <button onclick="checkPuzzle4()">Check</button>
+                </div>
+                <div class="result" id="puzzle4Result">Result: </div>
+                <div class="hint" onclick="alert('Hint: Age gap stays constant.')">Show Hint ❓</div>
+            </div>
+            <div class="puzzle-card">
+                <h2>Puzzle 5: Square Areas</h2>
+                <p>A square’s area is 16. If side doubles, what’s the new area?</p>
+                <div class="puzzle-input">
+                    <input type="number" id="puzzle5Answer" placeholder="Answer">
+                    <button onclick="checkPuzzle5()">Check</button>
+                </div>
+                <div class="result" id="puzzle5Result">Result: </div>
+                <div class="hint" onclick="alert('Hint: Area scales with side length squared.')">Show Hint ❓</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="biology">
+        <h2>Biology Corner</h2>
+        <p>CBSE Class 10 Biology essentials!</p>
+        <div class="biology-grid">
+            <div class="biology-card">
+                <h2>Life Processes</h2>
+                <p>Nutrition: Autotrophic (plants make food 🌱) vs Heterotrophic (animals eat 🍽️).</p>
+                <p>Quiz: What gas do plants release? A) O₂ B) CO₂</p>
+                <div class="puzzle-input">
+                    <select id="bioQuiz1">
+                        <option value="">Select</option>
+                        <option value="O₂">A) O₂</option>
+                        <option value="CO₂">B) CO₂</option>
+                    </select>
+                    <button onclick="checkBioQuiz1()">Check</button>
+                </div>
+                <div class="result" id="bioQuiz1Result">Result: </div>
+            </div>
+            <div class="biology-card">
+                <h2>Heredity</h2>
+                <p>Mendel’s Law: Traits passed via genes 🧬 (e.g., tall vs short pea plants).</p>
+                <p>Quiz: Dominant trait shows if: A) One parent has it B) Both do</p>
+                <div class="puzzle-input">
+                    <select id="bioQuiz2">
+                        <option value="">Select</option>
+                        <option value="One">A) One</option>
+                        <option value="Both">B) Both</option>
+                    </select>
+                    <button onclick="checkBioQuiz2()">Check</button>
+                </div>
+                <div class="result" id="bioQuiz2Result">Result: </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="about" class="container">
+        <p>MathHaven - Your CBSE & JEE prep hub! 🌍</p>
+    </footer>
+
+    <script>
+        // Tab Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.container').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Theme Switcher
+        const themeSelect = document.getElementById("themeSelect");
+        themeSelect.addEventListener("change", () => {
+            document.body.className = themeSelect.value;
+        });
+
+        // Tool Functions
+        function calculate() {
+            const num1 = parseFloat(document.getElementById("num1").value);
+            const num2 = parseFloat(document.getElementById("num2").value);
+            const operation = document.getElementById("operation").value;
+            let result = isNaN(num1) || isNaN(num2) ? "Enter valid numbers. 🤔" : 
+                operation === "add" ? num1 + num2 :
+                operation === "subtract" ? num1 - num2 :
+                operation === "multiply" ? num1 * num2 :
+                operation === "divide" && num2 !== 0 ? (num1 / num2).toFixed(4) : "Cannot divide by zero. 🚫";
+            document.getElementById("calcResult").textContent = `Result: ${result} ✅`;
+        }
+
+        function simplifyFraction() {
+            const num = parseInt(document.getElementById("numerator").value);
+            const den = parseInt(document.getElementById("denominator").value);
+            if (isNaN(num) || isNaN(den) || den === 0) {
+                document.getElementById("fracResult").textContent = "Result: Enter valid numbers (denominator ≠ 0). 🤔";
+                return;
+            }
+            const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+            const divisor = gcd(Math.abs(num), Math.abs(den));
+            document.getElementById("fracResult").textContent = `Result: ${num / divisor}/${den / divisor} 🎉`;
+        }
+
+        function solveQuadratic() {
+            const a = parseFloat(document.getElementById("quadA").value);
+            const b = parseFloat(document.getElementById("quadB").value);
+            const c = parseFloat(document.getElementById("quadC").value);
+            if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+                document.getElementById("quadResult").textContent = "Result: Enter valid numbers (a ≠ 0). 🤔";
+                return;
+            }
+            const disc = b * b - 4 * a * c;
+            let result = disc >= 0 ? `Roots: ${((-b + Math.sqrt(disc)) / (2 * a)).toFixed(2)}, ${((-b - Math.sqrt(disc)) / (2 * a)).toFixed(2)}` : "No real roots. 🚫";
+            document.getElementById("quadResult").textContent = `Result: ${result} ✅`;
+        }
+
+        function calcDistance() {
+            const x1 = parseFloat(document.getElementById("x1").value);
+            const y1 = parseFloat(document.getElementById("y1").value);
+            const x2 = parseFloat(document.getElementById("x2").value);
+            const y2 = parseFloat(document.getElementById("y2").value);
+            if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+                document.getElementById("distResult").textContent = "Result: Enter valid coordinates. 🤔";
+                return;
+            }
+            const dist = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            document.getElementById("distResult").textContent = `Result: ${dist.toFixed(2)} units ✅`;
+        }
+
+        function drawGraph() {
+            const m = parseFloat(document.getElementById("slope").value) || 0;
+            const b = parseFloat(document.getElementById("intercept").value) || 0;
+            const canvas = document.getElementById("graphCanvas");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(0, 100 - b * 10);
+            ctx.lineTo(300, 100 - (m * 30 + b) * 10);
+            ctx.strokeStyle = "#40916c";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            document.getElementById("graphResult").textContent = isNaN(m) || isNaN(b) ? "Result: Enter numbers. 🤔" : `Result: y = ${m}x + ${b} plotted! 📈`;
+        }
+
+        // Home Functions
+        function solveHomeQuadratic() {
+            const a = parseFloat(document.getElementById("homeQuadA").value);
+            const b = parseFloat(document.getElementById("homeQuadB").value);
+            const c = parseFloat(document.getElementById("homeQuadC").value);
+            if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+                document.getElementById("homeQuadResult").textContent = "Result: Enter valid numbers (a ≠ 0). 🤔";
+                return;
+            }
+            const disc = b * b - 4 * a * c;
+            let result = disc >= 0 ? `Roots: ${((-b + Math.sqrt(disc)) / (2 * a)).toFixed(2)}, ${((-b - Math.sqrt(disc)) / (2 * a)).toFixed(2)}` : "No real roots. 🚫";
+            document.getElementById("homeQuadResult").textContent = `Result: ${result} ✅`;
+        }
+
+        function checkHomePuzzle() {
+            const answer = parseInt(document.getElementById("homePuzzleAnswer").value);
+            const resultEl = document.getElementById("homePuzzleResult");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 10 ? "Correct! (+2 pattern) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        // Puzzle Progress
+        let solvedCount = 0;
+        function updateProgress() {
+            const progress = (solvedCount / 5) * 100;
+            const fill = document.getElementById("progressFill");
+            fill.style.width = `${progress}%`;
+            fill.textContent = `${progress}% ${progress < 50 ? '🌟' : progress < 80 ? '🚀' : '🏆'}`;
+        }
+
+        // Puzzle Functions
+        function checkPuzzle1() {
+            const answer = parseInt(document.getElementById("puzzle1Answer").value);
+            const resultEl = document.getElementById("puzzle1Result");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 10 ? "Correct! (+2 pattern) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct") && !resultEl.classList.contains("solved")) {
+                solvedCount++;
+                resultEl.classList.add("solved");
+                updateProgress();
+            }
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        function checkPuzzle2() {
+            const answer = parseInt(document.getElementById("puzzle2Answer").value);
+            const resultEl = document.getElementById("puzzle2Result");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 3 ? "Correct! (12 - 3 = 9, 9 ÷ 3 = 3) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct") && !resultEl.classList.contains("solved")) {
+                solvedCount++;
+                resultEl.classList.add("solved");
+                updateProgress();
+            }
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        function checkPuzzle3() {
+            const answer = parseInt(document.getElementById("puzzle3Answer").value);
+            const resultEl = document.getElementById("puzzle3Result");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 4 ? "Correct! (8 + 3 + 4 = 15) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct") && !resultEl.classList.contains("solved")) {
+                solvedCount++;
+                resultEl.classList.add("solved");
+                updateProgress();
+            }
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        function checkPuzzle4() {
+            const answer = parseInt(document.getElementById("puzzle4Answer").value);
+            const resultEl = document.getElementById("puzzle4Result");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 16 ? "Correct! (Age gap: 4, 12 + 4 = 16) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct") && !resultEl.classList.contains("solved")) {
+                solvedCount++;
+                resultEl.classList.add("solved");
+                updateProgress();
+            }
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        function checkPuzzle5() {
+            const answer = parseInt(document.getElementById("puzzle5Answer").value);
+            const resultEl = document.getElementById("puzzle5Result");
+            const result = isNaN(answer) ? "Enter a number. 🤔" : answer === 64 ? "Correct! (Side 4 → 8, 8² = 64) 🎉" : "Try again. 🤔";
+            resultEl.textContent = `Result: ${result}`;
+            if (result.startsWith("Correct") && !resultEl.classList.contains("solved")) {
+                solvedCount++;
+                resultEl.classList.add("solved");
+                updateProgress();
+            }
+            if (result.startsWith("Correct")) resultEl.classList.add("correct");
+            setTimeout(() => resultEl.classList.remove("correct"), 500);
+        }
+
+        // Fake AI Tool
+        function askAI() {
+            const puzzleNum = parseInt(document.getElementById("aiPuzzleNum").value);
+            const answer = parseInt(document.getElementById("aiAnswer").value);
+            const resultEl = document.getElementById("aiResult");
+            resultEl.textContent = "AI: Processing… 🤖 Beep!";
+            setTimeout(() => {
+                if (isNaN(puzzleNum) || puzzleNum < 1 || puzzleNum > 5 || isNaN(answer)) {
+                    resultEl.textContent = "AI: Invalid input! Enter puzzle # (1-5) and answer. 🤔";
+                } else {
+                    const responses = [
+                        { correct: 10, hint: "AI: 92% chance you’re close! Check the sequence. 📈", wrong: "AI: 73% error probability. Count the steps! 🤓" },
+                        { correct: 3, hint: "AI: 87% confidence you’re near! Split the leftovers. 🍎", wrong: "AI: 61% chance of a misstep. Divide again! 🤔" },
+                        { correct: 4, hint: "AI: 95% sure you’re on track! Sum to 15. 🔢", wrong: "AI: 68% likelihood of error. Check the total! 🤓" },
+                        { correct: 16, hint: "AI: 89% probability you’re close! Age gaps hold. ⏳", wrong: "AI: 70% chance you overshot. Time check! 🤔" },
+                        { correct: 64, hint: "AI: 94% certainty you’re near! Squares grow fast. 📐", wrong: "AI: 65% odds you forgot to square. Retry! 🤓" }
+                    ];
+                    const puzzle = responses[puzzleNum - 1];
+                    resultEl.textContent = answer === puzzle.correct ? `AI: Correct! Neural net approves! 🎉` : Math.abs(answer - puzzle.correct) <= 2 ? puzzle.hint : puzzle.wrong;
+                }
+            }, 1000);
+        }
+
+        // Biology Quizzes
+        function checkBioQuiz1() {
+            const answer = document.getElementById("bioQuiz1").value;
+            document.getElementById("bioQuiz1Result").textContent = answer === "O₂" ? "Result: Correct! Plants release oxygen. 🌱" : "Result: Try again! 🤔";
+        }
+
+        function checkBioQuiz2() {
+            const answer = document.getElementById("bioQuiz2").value;
+            document.getElementById("bioQuiz2Result").textContent = answer === "One" ? "Result: Correct! One parent is enough for dominance. 🧬" : "Result: Try again! 🤔";
+        }
+    </script>
+</body>
+</html>
